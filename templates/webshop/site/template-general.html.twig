@@ -1,0 +1,49 @@
+{% extends 'webshop/site/base-site.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block page_content %}
+
+    {% block modal %}
+    {% endblock %}
+
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12 col-xl-12 mx-auto">
+                {% block header %}
+                    <div class="d-none d-md-block row mt-3">
+                        <div class="col-lg-12">
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb">
+                                    {% if breadcrumb is defined and breadcrumb is not empty %}
+                                        {% for item in breadcrumb %}
+                                            <li class="breadcrumb-item" {% if loop.last %}aria-current="page"{% endif %}>
+                                                <a class="text-decoration-none" href="{{ item.url }}">{{ item.text }}</a>
+                                            </li>
+                                        {% endfor %}
+                                    {% endif %}
+                                </ol>
+                            </nav>
+                        </div>
+                    </div>
+                {% endblock %}
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        {% block content %}
+                        {% endblock %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% block contentWide %}
+    {% endblock %}
+
+    {% block contentSecondary %}
+    {% endblock %}
+
+{% endblock %}

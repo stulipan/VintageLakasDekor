@@ -1,0 +1,93 @@
+{
+  "entrypoints": {
+    "admin-app": {
+      "js": [
+        "/build/runtime.js",
+        "/build/admin-app.js"
+      ],
+      "css": [
+        "/build/admin-app.css"
+      ]
+    },
+    "v-admin": {
+      "js": [
+        "/build/runtime.js",
+        "/build/v-admin.js"
+      ],
+      "css": [
+        "/build/v-admin.css"
+      ]
+    },
+    "ProductEdit": {
+      "js": [
+        "/build/runtime.js",
+        "/build/ProductEdit.js"
+      ]
+    },
+    "StoreImageUpload": {
+      "js": [
+        "/build/runtime.js",
+        "/build/StoreImageUpload.js"
+      ]
+    },
+    "SmartLabelEdit": {
+      "js": [
+        "/build/runtime.js",
+        "/build/SmartLabelEdit.js"
+      ],
+      "css": [
+        "/build/SmartLabelEdit.css"
+      ]
+    },
+    "v-shop": {
+      "js": [
+        "/build/runtime.js",
+        "/build/v-shop.js"
+      ]
+    },
+    "store": {
+      "js": [
+        "/build/runtime.js",
+        "/build/store.js"
+      ]
+    },
+    "admin": {
+      "js": [
+        "/build/runtime.js",
+        "/build/admin.js"
+      ]
+    },
+    "owlcarousel": {
+      "js": [
+        "/build/runtime.js"
+      ],
+      "css": [
+        "/build/owlcarousel.css"
+      ]
+    },
+    "admin-theme": {
+      "js": [
+        "/build/runtime.js"
+      ],
+      "css": [
+        "/build/admin-theme.css"
+      ]
+    },
+    "store-theme": {
+      "js": [
+        "/build/runtime.js"
+      ],
+      "css": [
+        "/build/store-theme.css"
+      ]
+    },
+    "store-plugins": {
+      "js": [
+        "/build/runtime.js"
+      ],
+      "css": [
+        "/build/store-plugins.css"
+      ]
+    }
+  }
+}

@@ -1,0 +1,36 @@
+<div class="sidebar sidebar-sm sidebar-right fade" id="JS--Sidebar-Cart" tabindex="-1" role="dialog" aria-labelledby="sidebarLabel" aria-hidden="true">
+    <div class="sidebar-dialog sidebar-dialog-scrollable sidebar-dialog-centered" role="document">
+        <div class="sidebar-content">
+            <div class="sidebar-header">
+                <span class="sidebar-title h5" id="sidebarLabel">{{ 'cart.cart-content'|trans }}</span>
+                <button type="button" class="close" data-dismiss="sidebar" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="sidebar-body">
+                <div class="d-flex flex-column justify-content-between h-100">
+                    <div class="JS--Sidebar-cartBody cart-body" data-section-id="sidebarCart-template" data-section-type="sidebarCart-template">
+                        {% include 'webshop/cart/cart.html.twig' with {
+                            'order': cart,
+                            'showQuantity': false,
+                            'showRemove': false,
+                            'showTotal': true,
+                        } %}
+                    </div>
+                </div>
+            </div>
+            <div class="sidebar-footer">
+                <div class="d-flex flex-column justify-content-between flex-grow-1">
+                    <a href="{{ path('site-checkout-step1-pickDeliveryAddress') }}" class="btn btn-primary">
+                        <span class="loading-spinner-invisible">{{ 'cart.continue-to-checkout'|trans }}</span>
+                        <div class="loading-spinner" role="status"></div>
+                    </a>
+{#                    <button role="button" class="btn btn-secondary mt-3" data-dismiss="sidebar" aria-label="Close">{{ 'cart.continue-shopping'|trans }}</button>#}
+                    <a href="{{ path('site-checkout-step0-pickExtraGift') }}" class="btn btn-secondary mt-3" onclick="clickAndGo(event)">
+                        {{ 'cart.view-cart'|trans }}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

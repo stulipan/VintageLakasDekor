@@ -1,0 +1,21 @@
+<!-- start page title -->
+<div class="row mb-2">
+    <div class="col-12">
+        <div class="page-title-box my-2 mt-sm-3 mb-sm-2">
+            {#<div class="page-title-right">#}
+                {#<ol class="breadcrumb m-0">#}
+                    {#<li class="breadcrumb-item"><a href="{{ path('dashboard') }}">Admin</a></li>#}
+                    {#<li class="breadcrumb-item"><a href="{{ path('inventory-supply-list-all') }}">Szállítmányok</a></li>#}
+                    {#<li class="breadcrumb-item active">{{ title }}</li>#}
+                {#</ol>#}
+            {#</div>#}
+
+            <!-- header of default page content widget -->
+            {{ include('/admin/_title_insert.html.twig') }}
+
+            {{ include('/admin/_alert_widget.html.twig') }}
+
+        </div>
+    </div>
+</div>
+<!-- end page title -->

@@ -1,0 +1,59 @@
+<div class="navbar-custom">
+    <ul class="navbar-nav flex-row">
+        <li class="nav-item dropdown">
+            <a class="nav-link" id="userDropdown" data-toggle="dropdown" data-display="static" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                <div class="nav-user">
+                    <div class="account-user-avatar">
+                        <div class="avatar-wrapper">
+                            <div class="avatar">
+                                {{ app.user.avatar }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="account-user-detail">
+                        <span class="account-user-name">Helló, {{ app.user.username|capitalize }}!</span>
+                        <span class="account-position">{{ app.user.email }}</span>
+                    </div>
+                </div>
+            </a>
+            <div class="dropdown-menu dropdown-menu-right dropdown-transition dropdown-menu-topbar mt-2" aria-labelledby="userDropdown">
+                <a href="{{ path('user-show', {'id': app.user.id}) }}" class="dropdown-item notify-item">
+                    <i class="far fa-user mr-2"></i>
+                    Adatlap
+                </a>
+                {% if is_granted('ROLE_IMPERSONATE_USER') %}
+                <a href="{{ path('dashboard', {'_switch_user': 'liviu.chioran+1@gmail.com'}) }}" class="dropdown-item notify-item">
+                    <i class="fas fa-user-secret mr-2"></i>
+                    Impersonate user
+                </a>
+                {%  endif %}
+                <a href="{{ path('admin-logout') }}" class="dropdown-item notify-item">
+                    <i class="fas fa-sign-out-alt mr-2"></i>
+                    <span>Kijelentkezés</span>
+                </a>
+            </div>
+        </li>
+        <li class="nav-item dropdown">
+            <a class="nav-link" href="#" role="button" data-toggle="sidebar" data-target="#slider--Settings" aria-haspopup="true" aria-expanded="false">
+                <span class="navbar-toggler-icon"><i class="fas fa-cog"></i></span>
+            </a>
+        </li>
+        <li class="nav-item dropdown">
+            <a class="nav-link" id="langDropdown" data-toggle="dropdown" data-display="static" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                <div class="nav-user">
+                    <span class="navbar-toggler-icon"><i class="fas fa-globe"></i></span>
+                </div>
+            </a>
+            <div class="dropdown-menu dropdown-menu-right dropdown-transition dropdown-menu-topbar mt-2" aria-labelledby="userDropdown">
+                <a href="{{ path('content-language', {'language': 'hu'}) }}" class="dropdown-item">
+                    {#                    <img src="{{ asset('/webshop/site/flags/4x3/hu.svg') }}" alt="magyar" class="topbar-flag">#}
+                    Magyar
+                </a>
+                <a href="{{ path('content-language', {'language': 'en'}) }}" class="dropdown-item">
+                    {#                    <img src="{{ asset('/webshop/site/flags/4x3/gb.svg') }}" alt="english" class="topbar-flag">#}
+                    English
+                </a>
+            </div>
+        </li>
+    </ul>
+</div>

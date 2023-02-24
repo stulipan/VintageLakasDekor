@@ -1,0 +1,97 @@
+{% if app.request.locale == 'en' %}
+    {% set myLocale = 'gb' %}
+{% else %}
+    {% set myLocale = app.request.locale %}
+{% endif %}
+<!DOCTYPE html>
+<html style="background-color: #5B6377;">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>{% block title %}{% if pageTitle is defined and pageTitle is not empty %}{{ pageTitle }} | {% endif %} {{ storeSettings.get('meta.name') }}{% endblock %}</title>
+
+    {% block stylesheets %}
+{#        <!-- 48×48 -->#}
+        <link rel="shortcut icon" href="{{ storeFavicon }}" type="image/png">
+        {#        <link rel="icon" href="{{ asset('webshop/site/favicon/icon.svg')}}" type="image/svg+xml">#}
+{#        <!-- 180×180 -->#}
+        <link rel="apple-touch-icon" href="{{ storeSettings.get('store.apple-touch-icon') }}">
+{#        <link rel="manifest" href="{{ asset('webshop/site/favicon/manifest.webmanifest')}}">#}
+
+        <style>
+            {% include 'webshop/_css/fonts.html.twig' %}
+
+            *,
+            *::before,
+            *::after {
+                box-sizing: border-box;
+            }
+
+            @media (prefers-reduced-motion: no-preference) {
+                :root {
+                    scroll-behavior: smooth;
+                }
+            }
+        </style>
+
+        <link rel="stylesheet" href="https://www.vintagelakasdekor.hu/style/vintage-theme.min.css">
+{#        <link rel="stylesheet" href="http://www.vintagelakasdekor.hu/style/vintage-theme.min.css" media="print" onload="this.media='all'">#}
+
+    {% endblock %}
+
+    {% block trackingCodes %}
+    {% include 'webshop/widgets/tracking-codes.html.twig' %}
+    {% endblock %}
+</head>
+
+<body class="{% block bodyClass %}{% endblock %}">
+
+{% block body %}
+    {% block trackingCodesBody %}
+{#        {% include 'webshop/widgets/tracking-codes-body.html.twig' %}#}
+    {% endblock %}
+
+{% endblock %}
+
+
+{% block javascripts %}
+    <script async>
+        // ------------------------------------------------------- //
+        //   Inject SVG Sprite -
+        //   see more here
+        //   https://css-tricks.com/ajaxing-svg-sprite/
+        // ------------------------------------------------------ //
+        function injectSvgSprite(path) {
+
+            var ajax = new XMLHttpRequest();
+            ajax.open("GET", path, true);
+            ajax.send();
+            ajax.onload = function(e) {
+                var div = document.createElement("div");
+                div.className = 'd-none';
+                div.innerHTML = ajax.responseText;
+                document.body.insertBefore(div, document.body.childNodes[0]);
+            }
+        }
+        injectSvgSprite('/style/icons/icons-sprite.svg');
+    </script>
+
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+{#    <script src="{{ asset('webshop/lodash.core.min.js') }}"></script>#}
+{#    <script src="{{ asset('webshop/validate.min.js') }}"></script>#}
+
+{#    {% include 'webshop/widgets/store-localization-js.html.twig' %}#}
+{#    {% include 'webshop/widgets/store-settings-js.html.twig' %}#}
+
+
+{#    <script src="{{ asset('webshop/site/js/moment.min.js') }}"></script>#}
+{#    <script src="{{ asset('webshop/site/js/daterangepicker.min.js') }}"></script>#}
+{#    {{ encore_entry_script_tags('store') }}#}
+{% endblock %}
+</body>
+</html>

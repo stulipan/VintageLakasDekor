@@ -1,0 +1,39 @@
+{% extends 'admin/template-listing.html.twig' %}
+
+{% set pageTitle = title %}
+{% set breadcrumb = {
+	0: {
+		'url': path('settings-home'),
+		'text': 'settings.settings'|trans,
+	},
+} %}
+
+{% set cancelUrl = path('settings-home') %}
+
+{%- block title -%}
+	{{ pageTitle }}
+{%- endblock -%}
+
+{% block contentInner %}
+
+{#	{% include 'admin/settings/_header.html.twig' with {#}
+{#		'pageTitle' : title,#}
+{#		'backToUrl': 'settings-home',#}
+{#		'backToText': 'Beállítások'#}
+{#	} %}#}
+
+{#	<div class="row row-5">#}
+{#		<div class="col-md-12 pt-md-3 mb-3">#}
+{#			<div class="card mb-20px">#}
+				<div class="card-body">
+					<div id="v--geoPrice">
+						<geo-price :back-url="'{{ path('settings-home') }}'">
+						</geo-price>
+					</div>
+				</div>
+{#			</div>#}
+{#		</div>#}
+{#	</div>#}
+
+{% endblock %}
+

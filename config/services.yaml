@@ -1,0 +1,166 @@
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
+parameters:
+    locale: 'hu'
+    app_locales: hu
+    supported_locales:
+      hu_HU: hu
+#      en_US: en
+#      en_GB: en
+    images_directory: '%kernel.project_dir%/public/uploads/images'
+    product_images_directory: '%kernel.project_dir%/public/uploads/images/termekek'
+    category_images_directory: '%kernel.project_dir%/public/uploads/images/categories'
+    export_directory: '%kernel.project_dir%/export'
+
+    default_vat_rate: 1  # id=1 a VatRate db tablaban   #nincs hasznalva!!
+
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+        bind:
+            $targetDirectory: '%images_directory%'    # used in Services\FileUploader.php
+            $exportDirectory: '%export_directory%'
+            $imagePath: '%images_directory%'          # used in Form\ImageType.php
+#            $default_vat_rate: 1
+            $locales: '%app_locales%'
+            $supportedLocales: '%supported_locales%'
+            $defaultLocale: '%locale%'
+            $defaultContentLocale: '%locale%'
+            $storeSettingsDirectory: '%kernel.project_dir%/src/Resources/StoreSettings'
+            $generalSettingsFile: 'general.yaml'
+            $checkoutSettingsFile: 'checkout.yaml'
+            $adminSettingsFile: 'admin.yaml'
+
+
+    # makes classes in src/ available to be used as services
+    # this creates a service per class whose id is the fully-qualified class name
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Kernel.php'
+            - '../src/Tests/'
+
+    # controllers are imported separately to make sure services can be injected
+    # as action arguments even if you don't extend any base controller class
+    App\Controller\:
+        resource: '../src/Controller/'
+        tags: ['controller.service_arguments']
+
+
+    App\Boltzaras\:
+        resource: '../src/Boltzaras/*'
+        exclude: '../src/Boltzaras/{Entity,Migrations,Tests,Kernel.php}'
+
+    boltzaras_controller:
+        namespace: App\Boltzaras\Controller\  # these 2 lines are equivalent to: App\Boltzaras\Controller\:
+        resource: '../src/Boltzaras/Controller'
+        tags: ['boltzaras_controller.service_arguments']
+
+
+    # Events
+    App\Event\SetOrderNumber:
+        tags:
+            - { name: doctrine.event_listener, event: postPersist }
+    App\Event\SetSlugProduct:
+        tags:
+            - { name: doctrine.orm.entity_listener, event: prePersist, entity: 'App\Entity\Product\Product' }
+            - { name: doctrine.orm.entity_listener, event: postPersist, entity: 'App\Entity\Product\Product' }
+            - { name: doctrine.orm.entity_listener, event: postLoad, entity: 'App\Entity\Product\Product' }
+    App\Event\SetSlugCmsPage:
+        tags:
+            - { name: doctrine.orm.entity_listener, event: prePersist, entity: 'App\Entity\CmsPage' }
+            - { name: doctrine.orm.entity_listener, event: preUpdate, entity: 'App\Entity\CmsPage' }
+    App\Event\SetSlugCmsNavigation:
+        tags:
+            - { name: doctrine.orm.entity_listener, event: prePersist, entity: 'App\Entity\CmsNavigation' }
+            - { name: doctrine.orm.entity_listener, event: preUpdate, entity: 'App\Entity\CmsNavigation' }
+    App\Event\SetSlugEmailTemplate:
+        tags:
+            - { name: doctrine.orm.entity_listener, event: prePersist, entity: 'App\Entity\StoreEmailTemplate' }
+            - { name: doctrine.orm.entity_listener, event: preUpdate, entity: 'App\Entity\StoreEmailTemplate' }
+    App\Event\SetSlugBlog:
+        tags:
+            - { name: doctrine.orm.entity_listener, event: prePersist, entity: 'App\Entity\Blog' }
+            - { name: doctrine.orm.entity_listener, event: preUpdate, entity: 'App\Entity\Blog' }
+    App\Event\SetSlugBlogArticle:
+        tags:
+            - { name: doctrine.orm.entity_listener, event: prePersist, entity: 'App\Entity\BlogArticle' }
+            - { name: doctrine.orm.entity_listener, event: preUpdate, entity: 'App\Entity\BlogArticle' }
+    App\Event\TimestampableModel:
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+            - { name: doctrine.event_listener, event: preUpdate }
+    App\Event\ImageSetFullPath:
+        tags:
+            - { name: doctrine.event_listener, event: postLoad }
+            - { name: doctrine.event_listener, event: postUpdate }
+    App\Event\OrderSetPaymentStatus:
+        tags:
+            - { name: doctrine.orm.entity_listener, event: postLoad, entity: 'App\Entity\Order' }
+    App\Event\HostSetLocale:
+        tags:
+            - { name: doctrine.event_listener, event: postLoad }
+    App\Event\SetDefaultVatRateForNewPrice:
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+
+    App\Services\FileUploader:
+        public: true
+#        arguments:
+#            $targetDirectory: '%images_directory%'
+    App\Services\TranslationLoader:
+        tags:
+            - { name: translation.loader, alias: yaml }
+
+    App\Entity\Model\DeliveryDate:
+        public: true
+    App\Entity\Model\HiddenDeliveryDate:
+        public: true
+
+    App\Entity\StorePolicy:
+        public: true
+
+    # used in security.yaml in the main firewall's logout
+    my_logout_handler:
+        class: App\Security\LogoutHandler
+
+#    app.eventListeners.routeLocaleRewriteSubscriber:
+#        class: App\Event\RouteLocaleRewriteSubscriber
+#        arguments: ["@router", "%kernel.default_locale%", "%supported_locales%"]
+#        tags:
+#            - { name: kernel.event_subscriber }
+
+    App\Repository\:
+        resource: '../src/Repository'
+    App\Services\:
+        resource: '../src/Services'
+    App\Security\:
+        resource: '../src/Security'
+
+    # add more service definitions when explicit configuration is needed
+    # please note that last definitions always *replace* previous ones
+
+    # Ez App\Services\FileUploader-hez kell !!
+    Symfony\Component\Asset\Context\RequestStackContext: '@assets.context'
+
+#    App\Event\PriceVersioning:
+#        tags:
+#            - { name: doctrine.event_listener, event: onFlush }
+
+
+#    App\Controller\Utils\GeneralUtils:
+#        arguments:
+#            $em: 'doctrine.orm.default_entity_manager'
+
+
+twig:
+    globals:
+        locales: '%app_locales%'

@@ -1,0 +1,70 @@
+{% extends 'admin/template-editing.html.twig' %}
+
+{% set activeMenu = 'settings' %}
+{% set pageTitle = title %}
+{% set breadcrumb = {
+    0: {
+        'url': path('settings-home'),
+        'text': 'settings.settings'|trans,
+    },
+    1: {
+        'url': path('delivery-date-type-list'),
+        'text': 'Idősávok',
+    }
+} %}
+
+{% set cancelUrl = path('delivery-date-type-list') %}
+
+{%- block title -%}
+    {{ pageTitle }}
+{%- endblock -%}
+
+{% block moduleTitle %}
+    Idősávok
+{% endblock %}
+
+{% block moduleDescription %}
+    Itt tudsz megadni idősávokat. Az itt megadott idősávokat majd egy kiemelt naphoz rendelheted. <a href="{{ path('occasion-list') }}">Kiemelt napok listája itt.</a>
+{% endblock %}
+
+{% block contentInner %}
+    {% include 'admin/_delivey-date-type-form.html.twig' with {'cancelUrl': cancelUrl}  %}
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	<script>
+        // const floatContainer = document.getElementsByClassName('form-float')[0];
+        // const floatField = floatContainer.getElementsByTagName('input')[0];
+        // floatField.addEventListener('focus', () => {
+        //     floatContainer.classList.add('active');
+        // });
+        // floatField.addEventListener('blur', () => {
+        //     floatContainer.classList.remove('active');
+        // });
+
+        jQuery(document).ready(function() {
+            var $wrapper = $('.JS--Wrapper-allIntervals');
+            var $inputFieldsWrapper = $('.JS--Wrapper-fieldsForOneInterval');
+            var $button = $wrapper.find('a');
+//            console.dir($button);
+//            console.log($inputFieldsWrapper);
+//            console.log($wrapper);
+
+            $inputFieldsWrapper.data('index', $inputFieldsWrapper.find(':input').length);  // count input fields in wrapper
+            $wrapper.on('click', '.JS--Button-addNewInterval', function(e) {
+                e.preventDefault();
+//                console.log($inputFieldsWrapper.data('index'));
+
+                var prototype = $inputFieldsWrapper.data('prototype');
+                var index = $inputFieldsWrapper.data('index');   // get the new index
+                    // Replace '__name__' in the prototype's HTML to
+                    // instead be a number based on how many items we have
+                var newForm = prototype.replace(/__name__/g, index);
+                $inputFieldsWrapper.data('index', index + 1); // increase the index with one for the next item
+                $inputFieldsWrapper.append(newForm); // Display the form in the page before the "new" link
+            });
+        });
+    </script>
+{% endblock %}
+

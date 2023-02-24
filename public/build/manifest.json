@@ -1,0 +1,19 @@
+{
+  "build/admin-app.css": "/build/admin-app.css",
+  "build/admin-app.js": "/build/admin-app.js",
+  "build/v-admin.css": "/build/v-admin.css",
+  "build/v-admin.js": "/build/v-admin.js",
+  "build/ProductEdit.js": "/build/ProductEdit.js",
+  "build/StoreImageUpload.js": "/build/StoreImageUpload.js",
+  "build/SmartLabelEdit.css": "/build/SmartLabelEdit.css",
+  "build/SmartLabelEdit.js": "/build/SmartLabelEdit.js",
+  "build/v-shop.js": "/build/v-shop.js",
+  "build/store.js": "/build/store.js",
+  "build/admin.js": "/build/admin.js",
+  "build/owlcarousel.css": "/build/owlcarousel.css",
+  "build/admin-theme.css": "/build/admin-theme.css",
+  "build/store-theme.css": "/build/store-theme.css",
+  "build/store-plugins.css": "/build/store-plugins.css",
+  "build/runtime.js": "/build/runtime.js",
+  "build/images/owl.video.play.png": "/build/images/owl.video.play.7f01b071.png"
+}

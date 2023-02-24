@@ -1,0 +1,221 @@
+security:
+    # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
+    providers:
+        # users_in_memory: { memory: null }
+
+        # used to reload user from session & other features (e.g. switch_user)
+        store_user_provider_from_sajat_db:
+            entity:
+                class: App\Entity\User
+                # a property = username (vagy =email) alapján próbálja megtalálni a db-ben a megfelelő bejegyzést (felhasználót)
+                # azaz a username mezőbe beírt felhasználót próbálja megtalálni. Lehetne property: email
+                # Továbbá, a Sessionbe elmentett Usert, az ID-ja alapján lekéri db-ből, az esetlegesen közben frissült adatok miatt.
+                # used to reload user from session & other features (e.g. switch_user)
+                property: email
+                # if you're using multiple entity managers
+                # manager_name: customer
+        admin_user_provider_from_sajat_db:
+            entity:
+                class: App\Entity\User
+                # a property = username (vagy =email) alapján próbálja megtalálni a db-ben a megfelelő bejegyzést (felhasználót)
+                # azaz a username mezőbe beírt felhasználót próbálja megtalálni. Lehetne property: email
+                # Továbbá, a Sessionbe elmentett Usert, az ID-ja alapján lekéri db-ből, az esetlegesen közben frissült adatok miatt.
+                # used to reload user from session & other features (e.g. switch_user)
+                property: email
+                  # if you're using multiple entity managers
+                  # manager_name: customer
+
+        # Ez volt az eredeti login beallítás, amivel az itt eltárolt usert keresi meg
+        #in_memory:
+        #   memory:
+        #       users:
+                    # az eredeti jelszó, ami lent kódólva látható (ezt kell beütni): 'demo'
+        #           admin:
+        #               password: $2y$12$06PUUbqccjnagJdAviE1.u.rHbUraSnigoAdEacdU2Cp9MYJLsnnq
+        #               roles: 'ROLE_ADMIN'
+        #           liviu:
+        #               password: $2y$12$06PUUbqccjnagJdAviE1.u.rHbUraSnigoAdEacdU2Cp9MYJLsnnq
+        #               roles: 'ROLE_USER'
+
+    encoders:
+
+        # Ez volt az eredeti loginnál használt encoder beállítás, plaintext értékkel
+        # Symfony\Component\Security\Core\User\User: plaintext
+        # ezt váltja ki a loading users from database, ami ez esetben a User entitásban található
+        App\Entity\User: auto
+#            algorithm: 'auto'
+#            cost: 12
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+        # Ez a rész arra szolgál, hogy az Admin és a sima Weboldal autentikációja különvegyük, ne legyen átjárás.
+        # Párhuzamosan két user léphet így be kettő kontextusba: egy Adminba, egy a Weboldalra.
+        # A kontextuson tudnak osztozkodni ezzel a két beállítással:  'context: my_context' és 'stateless: false'
+        api_login:
+            pattern:  ^/admin/api/login
+            provider: admin_user_provider_from_sajat_db
+            stateless: true
+            anonymous: true
+            json_login:
+                check_path:               /admin/api/login   # This must defined in routes.yaml
+                success_handler:          lexik_jwt_authentication.handler.authentication_success
+                failure_handler:          lexik_jwt_authentication.handler.authentication_failure
+        api:
+            pattern: ^/admin/api/
+            provider: admin_user_provider_from_sajat_db
+            anonymous: true
+#            stateless: true   # it tells Symfony to not store the user in the session
+            stateless: false
+            context: api_context
+            logout: ~
+            guard:
+                authenticators:
+                    - App\Security\TokenAuthenticator
+#                    - lexik_jwt_authentication.jwt_token_authenticator # Hasznald ezt a sajat authenticatorod helyett.
+
+        admin:
+            #            pattern: ^/(hu|en)/admin           # ez is mukodik, vagy altalanosabb az also sor
+            pattern: (^/admin)      #app_locales come from services.yaml
+            provider: admin_user_provider_from_sajat_db
+            anonymous: true
+            guard:
+                authenticators:
+                    - App\Security\AdminLoginFormAuthenticator
+            #            form_login:
+            #                login_path: admin-login
+            #                check_path: admin-login
+            #                csrf_token_generator: security.csrf.token_manager
+            #                use_referer: true
+            remember_me:
+                secret: '%kernel.secret%'
+                lifetime: 2592000 # 30 days in seconds, if missing, default is one year.
+                path: /
+#                path: /%app_locales%/admin
+#                always_remember_me: true
+            switch_user: true  # Add to any URL '?_switch_user=' and the email address of a user to impersonate
+            logout:
+                path: admin-logout
+                target: admin-login
+            context: my_context
+            stateless: false
+        main:
+            pattern: ^/
+            provider: store_user_provider_from_sajat_db
+            anonymous: true
+#            lazy: true
+            guard:
+                authenticators:
+                    - App\Security\LoginFormAuthenticator
+#                entry_point: App\Security\LoginFormAuthenticator
+            form_login:
+                # The route name that the login form submits to
+                check_path: site-login
+                # The name of the route where the login form lives
+                # When the user tries to access a protected page, they are redirected here
+                login_path: site-login
+                # Secure the login form against CSRF
+                # Reference: https://symfony.com/doc/current/security/csrf.html#csrf-protection-in-login-forms
+#                csrf_token_generator: security.csrf.token_manager
+#                login_path: site-login
+#                check_path: site-login
+                use_referer: true
+#                require_previous_session: false  # ??? jan 21, 2021
+            remember_me:
+                secret: '%kernel.secret%'
+                lifetime: 2592000 # 30 days in seconds, if missing, default is one year.
+                path: /
+            switch_user: true  # Add to any URL '?_switch_user=' and the email address of a user to impersonate
+            logout:
+                path:   logout #/logout
+                success_handler: my_logout_handler  # it's set up in services.yaml
+#                target: homepage    # use this for always directing to homepage after logout
+
+            context: my_context
+            stateless: false
+
+
+
+
+#        main:
+#            pattern: ^/
+#            provider: app_user_provider_from_sajat_db
+#            anonymous: true
+#            guard:
+#                authenticators:
+#                    - App\Security\LoginFormAuthenticator
+#                    - App\Security\AdminLoginFormAuthenticator
+#                entry_point: App\Security\LoginFormAuthenticator
+#
+#            remember_me:
+#                secret: '%kernel.secret%'
+#                lifetime: 2592000 # 30 days in seconds, if missing, default is one year.
+#            switch_user: true  # Add to any URL '?_switch_user=' and the email address of a user to impersonate
+
+            # Ez volt az eredeti login beállítás, amivel böngésző ablak login jön fel
+            # http_basic: true
+            # ezt váltja ki a form_login típusú un. 'authentication listener'
+            # a logout részt is ugyanaz az authentication listener alá kell berakni, azaz a form_login alá
+
+# Ez a resz csak akkor kell, ha nem hasznaljuk a fenti guard: authenticators: reszt !!!
+#            form_login:
+#                login_path: admin-login
+#                check_path: admin-login
+#                default_target_path: product-list
+
+            # activate different ways to authenticate
+            # https://symfony.com/doc/current/security.html#firewalls-authentication
+
+            # https://symfony.com/doc/current/security/impersonating_user.html
+            # switch_user: true
+
+
+    role_hierarchy:
+        ROLE_EDITOR:  [
+            ROLE_USER
+            ]
+        ROLE_MANAGER: [
+            ROLE_USER,
+            ROLE_MANAGE_BOLTZARAS,
+            ROLE_MANAGE_ORDERS,
+            ROLE_MANAGE_CUSTOMERS,
+            ROLE_MANAGE_INVENTORY
+            ]  # sima admin, bárki lehet admin pl: Attila
+        ROLE_ADMIN: [
+            ROLE_MANAGER,
+            ROLE_BOLTZARAS_STAT,
+            ROLE_ORDER_STAT,
+            ROLE_DELIVERY_SETTINGS,
+            ROLE_MANAGE_SHIPPING,
+            ROLE_MANAGE_PAYMENT,
+            ROLE_MANAGE_VAT,
+            ROLE_MANAGE_SETTINGS,
+            ROLE_MANAGE_CMS,
+            ROLE_MANAGE_BLOG,
+            ROLE_MANAGE_TRANSLATION,
+            ROLE_MANAGE_STORE_POLICY,
+            ROLE_MANAGE_STORE_NOTIFICATIONS
+            ] # pl: Mariann
+        ROLE_POWER_ADMIN: [
+            ROLE_ADMIN,
+            ROLE_ALLOWED_TO_SWITCH,
+            ROLE_IMPERSONATE_USER
+            ] # csak én
+
+    # Easy way to control access for large sections of your site
+    # Note: Only the *first* access control that matches will be used
+    access_control:
+        - { path: ^/admin/api/login,   roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/admin/api,         roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/admin/$,     roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/admin/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+
+        - { path: ^/admin/user, roles: ROLE_MANAGER }
+        - { path: ^/admin/, roles: ROLE_MANAGER }
+        - { path: ^/my-account, roles: ROLE_USER }
+
+        - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+
+        # - { path: ^/admin, roles: ROLE_ADMIN }
+        # - { path: ^/profile, roles: ROLE_USER }

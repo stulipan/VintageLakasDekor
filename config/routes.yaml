@@ -1,0 +1,25 @@
+index:
+    path: /
+    controller: App\Controller\Shop\ShopController::showHomepage
+
+admin:
+#    path: /{_locale}/admin   # {all} so that both /admin and /hu/admin work
+    path: /admin   # {all} so that both /admin and /hu/admin work
+    controller: App\Controller\Admin\AdminController::showAdmin
+
+logout:
+    path: /logout
+    methods: GET
+
+admin-logout:
+#    path: '/{_locale}/admin/logout'
+    path: '/admin/logout'
+    methods: GET
+
+_liip_imagine:
+    resource: "@LiipImagineBundle/Resources/config/routing.yaml"
+
+api_login_check:
+    path: /admin/api/login
+
+# config/routes.yaml

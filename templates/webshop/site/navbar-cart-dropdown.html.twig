@@ -1,0 +1,15 @@
+    <a href="#" role="button" data-toggle="sidebar" data-target="#JS--Sidebar-Cart" class="navbar-link navbar-badge dropdown-toggle arrow-none">
+        <div class="position-relative">
+            <svg class="icon">
+                <use xlink:href="#bag"> </use>
+            </svg>
+            <div class="JS--Badge-itemsCount navbar-badge {% if cart.hasItems %}show{% endif %}" data-section-id="cartBadge-template" data-section-type="cartBadge-template" data-items-count="{% if cart.hasItems %}{{ cart.itemCount }}{% endif %}">
+                {% if cart.hasItems %}
+                    {{ cart.itemCount }}
+                {% else %}
+                    0
+                {% endif %}
+            </div>
+        </div>
+        <span class="navbar-text">{{ 'navbar.cart'|trans }}</span>
+    </a>

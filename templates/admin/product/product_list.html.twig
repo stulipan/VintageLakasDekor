@@ -1,0 +1,193 @@
+{% extends 'admin/template-listing.html.twig' %}
+
+{% set activeMenu = 'products' %}
+{% set pageTitle = 'product.products'|trans %}
+{% set breadcrumb = {
+	0: {
+		'url': path('dashboard'),
+		'text': 'dashboard.dashboard'|trans,
+	},
+} %}
+
+{% block stylesheets %}
+	{{ parent() }}
+	<link rel="stylesheet" href="https://d19m59y37dris4.cloudfront.net/sell/1-2-0/vendor/owl.carousel/assets/owl.carousel.css">
+{% endblock %}
+
+{% block headerActionsWrapper %}
+	<nav class="w-100 adaptive-tabs adaptive-tabs-right mr-2">
+		<ul class="nav nav-tabs adaptive-primary">
+			<li class="nav-item adaptive-item">
+				<a href="{{ path('product-download-csv') }}" class="nav-link"><i class="fas fa-file-csv mr-2"></i> Facebook CSV</a>
+			</li>
+			{#			<li class="nav-item adaptive-item">#}
+			{#				<a href="{{ path('cms-navigation-new') }}" class="nav-link">Új bla bla</a>#}
+			{#			</li>#}
+		</ul>
+		<ul class="adaptive-template">
+			<li class="nav-item adaptive-item adaptive-more">
+				<a href="" class="adaptive-button nav-link dropdown-toggle btn-more-actions" aria-haspopup="true" aria-expanded="false">
+					<span>{{ 'generic.more-actions'|trans }}</span>
+				</a>
+				<ul class="adaptive-secondary">
+				</ul>
+			</li>
+		</ul>
+	</nav>
+	<a href="{{ path('product-new') }}" class="btn btn-primary">{{ 'product.new-product'|trans }}</a>
+	<a href="{{ path('collection-list') }}" class="btn btn-secondary ml-2">{{ 'collection.collections'|trans }}</a>
+{% endblock %}
+
+{% block contentFilter %}
+	<div class="card-body">
+		<nav class="adaptive-tabs">
+			{% set len = 0 %}
+			{% for quickLink in filterQuickLinks %}
+				{% set len = len +  quickLink['name']|length %}
+			{% endfor %}
+			{% set len = len + 10 %}
+			<ul class="nav nav-tabs adaptive-primary vertical-form-rowX" style="--nav-tabs-width: {{ len }}ch">
+				{% for quickLink in filterQuickLinks %}
+					<li class="nav-item adaptive-item">
+						<div class="vertical-colX">
+							<div class="">
+								{#												<span class="badge-quantity bg-white">{{ quickLink['itemCount'] }}</span>#}
+								<a href="{{ quickLink['url'] }}" class="nav-link {% if quickLink['active'] is defined and quickLink['active'] %}active{% endif %}">
+									<span class="d-flex justify-content-between align-items-center">
+										<span class="d-flex">{{ quickLink['name'] }}</span>
+										<span class="d-flex ml-2 badge badge-light">{{ quickLink['itemCount'] }}</span>
+									</span>
+								</a>
+							</div>
+						</div>
+					</li>
+				{% endfor %}
+			</ul>
+			<ul class="adaptive-template">
+				<li class="nav-item adaptive-item adaptive-more">
+					<button type="button" class="adaptive-button nav-link btn btn-link dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+						{#											<i class="fas fa-ellipsis-h"></i>#}
+						{{ 'generic.more'|trans }}
+					</button>
+					<ul class="adaptive-secondary">
+					</ul>
+				</li>
+			</ul>
+		</nav>
+	</div>
+	<div class="border-top">
+	</div>
+	<div class="card-body pb-0">
+		{{ form_start(filterForm, { 'attr': {'class': 'needs-validationX' }}) }}
+		<div class="align-middle">
+			<div class="w-100 d-flex justify-content-between">
+				<div class="field-group align-middle flex-columnX flex-md-row mr-2">
+					<div class="field-item flex-grow-3">
+						<div class="field-prepend">
+							<div class="field-addon-prepend w-addon-sm">
+								<i class="fas fa-search"></i>
+							</div>
+						</div>
+						{{ form_widget(filterForm.searchTerm, {'attr': {'class': 'pl-addon-sm' }}) }}
+					</div>
+					<div class="field-item flex-grow-1">
+						{{ form_widget(filterForm.status, {'attr': {'class': 'form-control' }}) }}
+					</div>
+				</div>
+				<div class="">
+					<input type="submit" value="{{ 'generic.ok'|trans }}" class="btn btn-secondary" formnovalidate>
+				</div>
+			</div>
+		</div>
+		<div style="display:none">
+			{{ form_rest(filterForm) }}
+		</div>
+		{{ form_end(filterForm) }}
+	</div>
+	<div class="card-body py-0">
+		{% if filterTags is defined and filterTags|length %}
+			<div class="vertical-form-row mt-2">
+				{% for filterKey,value in filterTags %}
+					{% if value is defined and value is not null %}
+						<div class="vertical-col">
+							<div class="filter-tag">
+								<div class="filter-tag-content">{{ value }}</div>
+								<a href="{{ filterUrls[filterKey] }}" class="filter-tag-button"><i class="fas fa-times mr-0"></i></a>
+							</div>
+						</div>
+					{% endif %}
+				{% endfor %}
+			</div>
+		{% endif %}
+	</div>
+{% endblock %}
+
+{% block tableHeader %}
+	{% if products is defined and products is not empty %}
+		<tr>
+			<th scope="col" class="">Kép</th>
+			<th scope="col">Terméknév</th>
+			<th scope="col">Ár</th>
+			<th scope="col">Készlet</th>
+			<th scope="col">SKU</th>
+{#			<th scope="col">Állapot</th>#}
+		</tr>
+	{% endif %}
+{% endblock %}
+
+{% block tableBody %}
+	{% if products is defined and products is not empty %}
+		{% for product in products %}
+			<tr {% if product.isRemoved == true %}class="disabled"{% endif %}>
+				<td class="align-middle">
+					{% if product.coverImageAsset is defined and product.coverImageAsset %}
+						<a href="{{ path('product-edit', {'id': product.id}) }}" class="">
+							<img class="img-thumbnail" src="{{ uploaded_asset(product.coverImageAsset)|imagine_filter('product_small') }}" style="width: 50px; width: 50px;" />
+						</a>
+					{% endif %}
+				</td>
+				<td class="align-middle text-left entryX">
+					<a href="{{ path('product-edit', {'id': product.id}) }}" class="">{{ product.name }}</a>
+					<a href="{{ path('site-product-show', {'slug': product.slug}) }}" class="btn-sm" target="_blank" title="Megtekinti a weboldalon">
+						<i class="fas fa-external-link-alt"></i>
+					</a>
+					<br>
+					{% if product.isPubliclyAvailable == false %}
+{#						<span class="text-sm text-muted-extra">{{ product.status }}</span>#}
+						<span class="product-tag">{{ product.status }}</span>
+					{% endif %}
+				</td>
+				<td class="align-middle text-rightX text-nowrap">{{ product.price.grossPrice|money }}</td>
+				<td class="align-middle">
+					<span class="JS--result">{{ product.stock|number }}</span>
+				</td>
+				<td class="align-middle">{{ product.sku }}</td>
+{#				<td class="align-middle">#}
+{#					<span class="badge badge-{% if product.status.id == 1 %}success{% elseif product.status.id == 2 %}warning{% else %}danger{% endif %}">{{ product.status }}</span>#}
+{#				</td>#}
+{#				<td class="align-middle">#}
+{#					<div class="w-100">#}
+{#						<a href="{{ path('product-edit', {'id': product.id}) }}" class="btn btn-sm btn-secondary" title="Módosít">#}
+{#							<i class="far fa-edit"></i></a>#}
+{#						<a href="{{ path('site-product-show', {'id': product.id}) }}" class="btn btn-sm btn-secondary" target="_blank" title="Megtekinti a weboldalon">#}
+{#							<i class="fas fa-external-link-alt"></i></a>#}
+{#						<a href="{{ path('product-delete', {'id': product.id}) }}" onclick="alert('Biztosan törölni akarod?')" class="btn btn-sm btn-secondary" title="Töröl">#}
+{#							<i class="far fa-trash-alt"></i></a>#}
+{#					</div>#}
+{#				</td>#}
+			</tr>
+		{% endfor %}
+	{% endif %}
+{% endblock %}
+
+{% block tableEmpty %}
+	{% if products is defined and products is empty %}
+		<div class="h-100 text-center p-4">
+			<div class="h1 text-muted-extra">
+				<i class="fas fa-boxes"></i>
+			</div>
+			<div class="font-18 mt-3 mb-2">Nem talált termékeket!</div>
+			<div class="text-muted-extra">Próbáld módosítani a szűrőket.</div>
+		</div>
+	{% endif %}
+{% endblock %}

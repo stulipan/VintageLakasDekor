@@ -1,0 +1,149 @@
+{% extends 'admin/template-listing.html.twig' %}
+
+{% set activeMenu = 'orders' %}
+{% set pageTitle = 'customer.customers'|trans %}
+{% set breadcrumb = {
+	0: {
+		'url': path('dashboard'),
+		'text': 'dashboard.dashboard'|trans,
+	},
+} %}
+
+{%- block title -%}
+	{{ pageTitle }}
+{%- endblock -%}
+
+
+{% block headerActionsWrapper %}
+	<a href="#" class="btn btn-primary">{{ 'customer.new-customer'|trans }}</a>
+{% endblock %}
+
+{% block contentFilter %}
+	<div class="card-body">
+		<nav class="adaptive-tabs">
+			<ul class="nav nav-tabs adaptive-primary">
+				{% for quickLink in filterQuickLinks %}
+					<li class="nav-item adaptive-item">
+						<a href="{{ quickLink['url'] }}" class="nav-link {% if quickLink['active'] is defined and quickLink['active'] %}active{% endif %}">
+							<span class="d-flex justify-content-between align-items-center">
+								<span class="d-flex">{{ quickLink['name'] }}</span>
+							</span>
+						</a>
+					</li>
+				{% endfor %}
+			</ul>
+			<ul class="adaptive-template">
+				<li class="nav-item adaptive-item adaptive-more">
+					<button type="button" class="adaptive-button nav-link btn btn-link dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+						{{ 'generic.more'|trans }}
+					</button>
+					<ul class="adaptive-secondary">
+					</ul>
+				</li>
+			</ul>
+		</nav>
+	</div>
+	<div class="border-top">
+	</div>
+	<div class="card-body pb-0">
+		{{ form_start(filterForm, { 'attr': {'class': 'needs-validationX' }}) }}
+		<div class="w-100 d-flex justify-content-between">
+			<div class="field-group align-middle flex-columnX flex-md-row mr-2">
+				<div class="field-item flex-lg-grow-2">
+					<div class="field-prepend">
+						<div class="field-addon-prepend w-addon-sm">
+							<i class="fas fa-search"></i>
+						</div>
+					</div>
+					{{ form_widget(filterForm.searchTerm, {'attr': {'class': 'pl-addon-sm', 'placeholder': 'customer.filter.search-placeholder'|trans} }) }}
+				</div>
+				<div class="field-item flex-lg-grow-1">
+					{{ form_widget(filterForm.acceptsMarketing, {'attr': {'class': ''}}) }}
+				</div>
+			</div>
+			<div class="">
+				<input type="submit" value="{{ 'generic.ok'|trans }}" class="btn btn-secondary" formnovalidate>
+			</div>
+		</div>
+		<div style="display:none">
+			{{ form_rest(filterForm) }}
+		</div>
+		{{ form_end(filterForm) }}
+	</div>
+	<div class="card-body py-0">
+		{% if filterTags is defined and filterTags|length %}
+			<div class="vertical-form-row mt-2">
+				{% for filterKey,value in filterTags %}
+					{% if value is defined and value is not null %}
+						<div class="vertical-col">
+							<div class="filter-tag">
+								<div class="filter-tag-content">{{ value }}</div>
+								<a href="{{ filterUrls[filterKey] }}" class="filter-tag-button"><i class="fas fa-times mr-0"></i></a>
+							</div>
+						</div>
+					{% endif %}
+				{% endfor %}
+			</div>
+		{% endif %}
+	</div>
+{% endblock %}
+
+{% block tableHeader %}
+	{% if customers is defined and customers is not empty %}
+{#		<tr>#}
+{#			<th scope="col" class="text-center">Név</th>#}
+{#			<th scope="col">Rendelései</th>#}
+{#			<th scope="col">Költés</th>#}
+{#		</tr>#}
+	{% endif %}
+{% endblock %}
+
+{% block tableBody %}
+	{% if customers is defined and customers is not empty %}
+		{% for customer in customers %}
+			<tr>
+				<td class="align-middle text-left">
+						{% if customer.fullname is defined and customer.fullname is not null %}
+						<a href="{{ path('customer-show', {'id': customer.id}) }}" class="">
+							{{ customer.fullname }}
+						</a>
+						(<em class="text-muted">{{ customer.email }}</em>)
+						{% else %}
+						<a href="{{ path('customer-show', {'id': customer.id}) }}" class="">
+							{{ customer.email }}
+						</a>
+						{% endif %}
+				</td>
+				<td class="align-middle">
+					{% if customer.acceptsMarketing %}
+						<span class="badge badge-success">{{ 'customer.accepts-marketing'|trans }}</span>
+					{% endif %}
+				</td>
+				<td class="align-middle text-right text-nowrap">
+					{{ customer.placedOrdersCount == 1 ? 'customer.order-count'|trans({ '{{ count }}': customer.placedOrdersCount }) : 'customer.orders-count'|trans({ '{{ count }}': customer.placedOrdersCount }) }}
+				</td>
+				<td class="align-middle text-right">
+							<span class="JS--result">{{ customer.spentAmount|money }} </span>
+{#					<span class="">költés</span>#}
+				</td>
+			</tr>
+		{% endfor %}
+	{% endif %}
+{% endblock %}
+
+{% block tableEmpty %}
+	{% if customers is defined and customers is empty %}
+		<div class="h-100 text-center p-4">
+			<div class="h1 text-muted-extra">
+				<i class="fas fa-user-friends"></i>
+			</div>
+			<div class="font-18 mt-3 mb-2">{{ 'customer.filter.not-found'|trans }}</div>
+			<div class="text-muted-extra">{{ 'customer.filter.not-found-suggestion'|trans }}</div>
+		</div>
+	{% endif %}
+{% endblock %}
+
+
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}
