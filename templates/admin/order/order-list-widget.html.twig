@@ -1,0 +1,132 @@
+        {% if orders is defined and orders is not empty %}
+            {% for order in orders %}
+                <div>
+                    <div class="col-md-12 bg-order--header py-2">
+                        <div class="d-flex justify-content-between">
+                            <div class="">
+                                {#<span class="badge badge-number badge-primary text-sm">#{{ order.id }}</span>#}
+                                <a href="{{ path('order-detail', {'id': order.id}) }}" class="font-weight-bold">#{{ order.number }}</a>
+                                - <em><strong>{{ order.priceTotalAfterDiscount ? order.priceTotalAfterDiscount : 23980|money }}</strong></em>
+                            </div>
+                            <div class="">
+                                <a href="#" class="">Módosít</a>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-md-12 pb-3 pb-md-2 mb-1 pt-1">
+                        <div class="">
+
+                            <div class="row">
+
+                                <div class="col-12 col-md-2 border-md-right">
+                                    <div class="font-weight-bold text-lgX d-inline d-md-block">{{ order.createdAt|date('M. j, Y') }}</div>
+                                    <div class="text-sm text-mutedZ d-inline d-md-block">{{ order.createdAt|date('H:i')}}</div>
+                                    <div class="mt-1 text-mutedZ d-inline d-md-block">
+                                        {#Összesen: <strong>{{ order.priceTotalAfterDiscount }} Ft</strong> <br>#}
+                                        <span class="text-sm">{{ order.paymentMethod ? order.paymentMethod.getName() : '' }} </span> <br>
+                                        {% if order.paymentMethod %}
+                                            {% if order.paymentMethod.image %}
+                                            <img class="img-thumbnail img-grayscale border-0 h-15px d-none d-md-inline" src="{{ asset('/uploads/images/termekek/' ~ order.paymentMethod.image) }}" />
+                                            {% endif %}
+                                        {% endif %}
+                                    </div>
+                                    <div class="mt-1 d-inline d-md-block">
+                                        {#<span class="text-muted">Állapot:</span> <em>Kifizetve</em><br>#}
+                                        <span class="badge badge-warning text-uppercase">Függőben levő</span>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-3 border-md-right mt-2 mt-md-0">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <span class="font-weight-bold text-lgX">{{ order.billingFullname ? order.billingFullname : '' }} {{ order.billingCompany is defined and order.billingCompany ? '/ ' ~ order.billingCompany : '' }}</span> <br>
+                                            <div class="text-mutedZ">
+{#                                                +{{ order.billingPhone ? order.billingPhone : ''}} <br>#}
+                                                {% if order.billingAddress %}
+                                                    {{ order.billingAddress.street }} <br>
+                                                    <span class="text-sm">{{ order.billingAddress.zip }} {{ order.billingAddress.city }}</span> <br>
+                                                {% endif %}
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-3 border-md-right mt-2 mt-md-0">
+                                    <span class="font-weight-bold">{{ order.shippingName ? order.shippingName : '' }}</span> <br>
+                                    <div class="">
+                                        +{{ order.shippingPhone ? order.shippingPhone : '' }} <br>
+                                        {% if order.shippingAddress %}
+                                            {{ order.shippingAddress.street }} <br>
+                                            <span class="text-sm">{{ order.shippingAddress.zip }} {{ order.shippingAddress.city }}</span> <br>
+                                        {% endif %}
+                                    </div>
+                                    <div class="mt-2">
+                                        {% if order.deliveryDate %}
+                                        <i class="far fa-clock mr-1 text-muted"></i> <strong>{{ order.deliveryDate|date('Y M j.')|lower }}</strong> <br>
+                                        <span class="">{{ order.deliveryInterval ? order.deliveryInterval ~ ' óra között': '' }}</span> <br>
+                                        {% endif %}
+                                        <span class="text-muted">{{ order.shippingMethod ? order.shippingMethod.getName() : '' }}</span>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-4 pl-md-2 mt-2 mt-md-0">
+                                    <div class="">
+                                        {% for item in order.items %}
+                                            <div class="">
+                                                <div class="">
+                                                    <div class="d-flex">
+                                                        <a class="mr-1" href="{{ path('site-product-show', {'slug': item.product.slug}) }}" target="_blank">
+                                                            <img class="img-thumbnail" src="{{ uploaded_asset(item.product.coverImageAsset)|imagine_filter('product_small') }}" width="50px;" />
+                                                        </a>
+                                                        <div class="text-sm mb-1">
+                                                            <span class="text-muted">Menny.:</span> <em>{{ item.quantity }} db </em><br>
+                                                            <span class="text-muted">Összesen:</span> <em>{{ item.priceTotal|money }} </em><br>
+                                                            <a href="{{ path('site-product-show', {'slug': item.product.slug}) }}" class="text-uppercaseX text-dark text-md"><strong>{{ item.product.productName }}</strong> <em><span class="badge badge-danger">{{ item.subproductAttribute ? '' ~ item.subproductAttribute : ''  }}</span></em></a><br>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                        <div class="rowX">
+                                            <div class="col-autoX text-nowrapX">
+                                                {% if order.message %}
+                                                <div class="text-sm">
+                                                    <div class="d-flex align-items-center text-center">
+                                                            <div class="d-flex align-items-start">
+                                                                <div class="bg-light p-2">
+                                                                    <div class="">
+                                                                        <span><i class="far fa-envelope text-sm text-muted"></i></span>
+                                                                        {#<br>#}
+                                                                        {#<span class="d-block text-muted text-uppercase mt-1">Üzenet</span>#}
+                                                                    </div>
+                                                                </div>
+                                                                <div class="text-left ml-1">
+                                                                    <p class="text-sm mb-0">
+                                                                        <span><em>{{ order.message }}</em></span> <br>
+                                                                        <span>{{ order.messageAuthor }}</span> <br>
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                    </div>
+                                                </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        <div class="mt-2 d-none d-sm-block">
+                                            Összesen: <strong>{{ order.priceTotalAfterDiscount }} Ft</strong> <br>
+                                            <span class="text-sm">{{ order.paymentMethod ? order.paymentMethod.getName() : '' }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <em></em>
+            <div class="alert alert-warning mb-2">Ennek a felhasználónak nem volt még rendelése.</div>
+        {% endif %}
+
+        
+

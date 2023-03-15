@@ -1,0 +1,63 @@
+{% extends 'admin/template-listing.html.twig' %}
+
+{% set activeMenu = 'settings' %}
+{% set pageTitle = 'ÁFA típusok' %}
+{% set breadcrumb = {
+    0: {
+        'url': path('settings-home'),
+        'text': 'settings.settings'|trans,
+    },
+} %}
+
+{%- block title -%}
+    {{ pageTitle }}
+{%- endblock -%}
+
+{% block bodyClass %} settings settings-edit{% endblock %}
+
+{% block headerActionsWrapper %}
+    <a href="{{ path('vat-rate-edit') }}" class="btn btn-primary">Új ÁFA típus</a>
+{% endblock %}
+
+{% block tableHeader %}
+    {% if vatRates is defined and vatRates|length %}
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">ÁFA típus</th>
+            <th scope="col">Aktuális értéke</th>
+            <th scope="col"><i class="fas fa-ellipsis-h"></i></th>
+        </tr>
+    {% endif %}
+{% endblock %}
+
+{% block tableBody %}
+    {% if vatRates is defined and vatRates|length %}
+        {% for rate in vatRates %}
+            <tr>
+                <td class="">{{ rate.id }}</td>
+                <td>{{ rate.name }} <br>
+                </td>
+                <td>
+                    {{ rate.value }}%
+                </td>
+                <td>
+                    <a href="{{ path('vat-rate-edit', {'id': rate.id}) }}" class="">
+                        <i class="fas fa-edit"></i></a>
+                </td>
+            </tr>
+        {% endfor %}
+    {% endif %}
+{% endblock %}
+
+
+{% block tableEmpty %}
+    {% if vatRates is defined and vatRates is empty %}
+        <div class="h-100 text-center p-4">
+            <div class="h1 text-muted-extra">
+                <i class="fas fa-search"></i>
+            </div>
+            <div class="font-18 mt-3 mb-2">Nincs találat!</div>
+            <div class="text-muted-extra">Próbáld módosítani a szűrőket.</div>
+        </div>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends 'admin/template-editing.html.twig' %}
+{#{% extends 'admin/template-with-sidebar.html.twig' %}#}
+
+{% set activeMenu = 'products' %}
+{% set pageTitle = product is defined and product is not null ? product.name : 'Új termék hozzáadása' %}
+{% set breadcrumb = {
+    0: {
+        'url': path('dashboard'),
+        'text': 'dashboard.dashboard'|trans,
+    },
+    1: {
+        'url': path('product-list'),
+        'text': 'Termékek',
+    }
+} %}
+{% set cancelUrl = path('product-list') %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('ProductEdit') }}
+{% endblock %}
+
+{% block content %}
+    <div id="v--product" class="mb-5">
+        <product :product-id="{{ product is defined and product.id is not empty ? product.id : 0}}"
+            {%- if productJson is defined -%}
+                :product="{{ productJson }}"
+            {%- endif -%}
+
+            {%- if statusesJson is defined -%}
+                :statuses="{{ statusesJson }}"
+            {%- endif -%}
+
+            {%- if categoriesJson is defined -%}
+                :categories="{{ categoriesJson }}"
+            {%- endif -%}
+
+            {%- if badgesJson is defined -%}
+                :badges="{{ badgesJson }}"
+            {%- endif -%}
+
+            {%- if salesChannelsJson is defined -%}
+                :sales-channels="{{ salesChannelsJson }}"
+            {%- endif -%}
+
+            {%- if kindsJson is defined -%}
+                :product-kinds="{{ kindsJson }}"
+            {%- endif -%}
+        >
+        </product>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('ProductEdit') }}
+{% endblock %}

@@ -1,0 +1,95 @@
+{% extends 'admin/template-listing.html.twig' %}
+
+{% set activeMenu = 'settings' %}
+{% set pageTitle = 'ÁFA értékek' %}
+{% set breadcrumb = {
+    0: {
+        'url': path('settings-home'),
+        'text': 'settings.settings'|trans,
+    },
+} %}
+
+{%- block title -%}
+    {{ pageTitle }}
+{%- endblock -%}
+
+{% block bodyClass %} settings settings-edit{% endblock %}
+
+{% block headerActionsWrapper %}
+    <nav class="w-100 adaptive-tabs adaptive-tabs-right mr-2">
+        <ul class="nav nav-tabs adaptive-primary">
+            <li class="nav-item adaptive-item">
+                <a class="nav-link" href="{{ path('vat-rate-edit') }}">Új ÁFA típus</a>
+            </li>
+            <li class="nav-item adaptive-item">
+                <a class="nav-link" href="{{ path('vat-rate-list') }}">ÁFA típusok</a>
+            </li>
+        </ul>
+        <ul class="adaptive-template">
+            <li class="nav-item adaptive-item adaptive-more">
+                <a href="" class="adaptive-button nav-link dropdown-toggle btn-more-actions" aria-haspopup="true" aria-expanded="false">
+                    <span>{{ 'generic.more-actions'|trans }}</span>
+                </a>
+                <ul class="adaptive-secondary">
+                </ul>
+            </li>
+        </ul>
+    </nav>
+    <a href="{{ path('vat-value-edit') }}" class="btn btn-primary">Új ÁFA rögzítése</a>
+{% endblock %}
+
+{% block tableHeader %}
+    {% if vatValues is defined and vatValues is not empty %}
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">ÁFA megnevezése</th>
+            <th scope="col">ÁFA értéke</th>
+            <th scope="col">Érvényes eddig</th>
+            <th scope="col"><i class="fas fa-ellipsis-h"></i></th>
+        </tr>
+    {% endif %}
+{% endblock %}
+
+{% block tableBody %}
+    {% if vatValues is defined and vatValues is not empty %}
+        {% for vatValue in vatValues %}
+            <tr>
+                <td class="">{{ vatValue.id }}</td>
+                <td>
+                    <a href="{{ path('vat-rate-edit', {'id': vatValue.vatRate.id}) }}" class="">{{ vatValue.vatRate }}</a>
+                </td>
+                <td class="text-nowrap">{{ vatValue.value|number_format(0, ',', ' ') }}%</td>
+                <td class=" font-weight-bold text-sm">
+                    {% if vatValue.value == vatValue.vatRate.value %}
+                        <span class="badge badge--missing badge-success">AKTÍV</span>
+                    {% else %}
+                        <span class="badge badge--missing badge-danger">LEJÁRT</span>
+                    {% endif %}
+
+                    {% if vatValue.expiresAt is defined and vatValue.expiresAt %}
+                        {{ vatValue.expiresAt|date('Y-M-d')}}
+                    {% else %}
+                        {{ include('admin/_missing-data-insert.html.twig') }}
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{{ path('vat-value-edit', {'id': vatValue.id}) }}" class="">
+                        <i class="fas fa-edit"></i></a>
+                </td>
+            </tr>
+        {% endfor %}
+    {% endif %}
+{% endblock %}
+
+
+{% block tableEmpty %}
+    {% if vatValues is defined and vatValues is empty %}
+        <div class="h-100 text-center p-4">
+            <div class="h1 text-muted-extra">
+                <i class="fas fa-search"></i>
+            </div>
+            <div class="font-18 mt-3 mb-2">Nincs találat!</div>
+            <div class="text-muted-extra">Próbáld módosítani a szűrőket.</div>
+        </div>
+    {% endif %}
+{% endblock %}

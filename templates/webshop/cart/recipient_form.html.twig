@@ -1,0 +1,85 @@
+{% import _self as myOwnMacro %}
+
+{% macro firstname(item) %}
+    <div class="form-group input-float col-md-6 {% if item.firstname.vars.value is defined and item.firstname.vars.value %}active{% endif %}">
+        <label for="{{ item.firstname.vars.full_name }}" class="form-label">{{ 'checkout.recipient.firstname'|trans }}</label>
+        {{ form_widget(item.firstname, {'attr': {'class': '', 'placeholder': 'checkout.recipient.firstname'|trans }}) }}
+        {{ form_errors(item.firstname) }}
+    </div>
+{% endmacro %}
+
+{% macro lastname(item) %}
+    <div class="form-group input-float col-md-6 {% if item.lastname.vars.value is defined and item.lastname.vars.value %}active{% endif %}">
+        <label for="{{ item.lastname.vars.full_name }}" class="form-label">{{ 'checkout.recipient.lastname'|trans }}</label>
+        {{ form_widget(item.lastname, {'attr': {'class': '', 'placeholder': 'checkout.recipient.lastname'|trans }}) }}
+        {{ form_errors(item.lastname) }}
+    </div>
+{% endmacro %}
+
+{{ form_start(recipientForm, { 'attr': {'class': 'JS--Wrapper-recipientForm',
+}}) }}
+{#<div class="row">#}
+{#    <div class="col-lg-12">#}
+        <div class="form-row">
+            {% if app.request.locale == 'hu' %}
+                {{ myOwnMacro.lastname(recipientForm) }}
+                {{ myOwnMacro.firstname(recipientForm) }}
+            {% endif %}
+            {% if app.request.locale == 'en' %}
+                {{ myOwnMacro.firstname(recipientForm) }}
+                {{ myOwnMacro.lastname(recipientForm) }}
+            {% endif %}
+        </div>
+        <div class="form-row">
+            <div class="form-group input-float col-lg-12 {% if recipientForm.address.street.vars.value is defined and recipientForm.address.street.vars.value %}active{% endif %}">
+                <label for="{{ recipientForm.address.street.vars.full_name }}" class="form-label">{{ 'checkout.recipient.address'|trans }}</label>
+                {{ form_widget(recipientForm.address.street, {'attr': {'class': '', 'placeholder': 'checkout.recipient.address-placeholder'|trans}}) }}
+                {{ form_errors(recipientForm.address.street) }}
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group input-float col-lg-12 {% if recipientForm.address.city.vars.value is defined and recipientForm.address.city.vars.value %}active{% endif %}">
+                <label for="{{ recipientForm.address.city.vars.full_name }}" class="form-label">{{ 'checkout.recipient.city'|trans }}</label>
+                {{ form_widget(recipientForm.address.city, {'attr': {'class': 'JS--recipientForm-city', 'placeholder': 'checkout.recipient.city-placeholder'|trans }}) }}
+                {{ form_errors(recipientForm.address.city) }}
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col-sm-5">
+                <div class="form-group input-float input-float-select {% if recipientForm.address.country.vars.value is defined and recipientForm.address.country.vars.value %}active{% endif %}">
+                    <label for="{{ recipientForm.address.country.vars.full_name }}" class="form-label">{{ 'checkout.recipient.country'|trans }}</label>
+                    {{ form_widget(recipientForm.address.country, {'attr': {'class': '', 'placeholder': 'checkout.recipient.country'|trans }}) }}
+                    {{ form_errors(recipientForm.address.country) }}
+                </div>
+            </div>
+            <div class="form-group input-float col-sm-4 {% if recipientForm.address.province.vars.value is defined and recipientForm.address.province.vars.value %}active{% endif %}">
+                <label for="{{ recipientForm.address.province.vars.full_name }}" class="form-label">{{ 'checkout.recipient.province'|trans }}</label>
+                {{ form_widget(recipientForm.address.province, {'attr': {'class': 'JS--recipientForm-province', 'placeholder': 'checkout.recipient.province'|trans }}) }}
+                {{ form_errors(recipientForm.address.province) }}
+            </div>
+            <div class="form-group input-float col-sm-3 {% if recipientForm.address.zip.vars.value is defined and recipientForm.address.zip.vars.value %}active{% endif %}">
+                <label for="{{ recipientForm.address.zip.vars.full_name }}" class="form-label">{{ 'checkout.recipient.zip'|trans }}</label>
+                {{ form_widget(recipientForm.address.zip, {'attr': {'class': 'JS--recipientForm-zip', 'placeholder': 'checkout.recipient.zip'|trans , 'data-url' : path('cart-getPlaceByZip') }}) }}
+                {{ form_errors(recipientForm.address.zip) }}
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group input-float input-float-block-spaces col-lg-12 {% if recipientForm.phone.vars.value is defined and recipientForm.phone.vars.value %}active{% endif %}">
+                <div class="field-item field-append">
+                    <div class="field-addon-append">
+                        <div class="btn" data-toggle="tooltip" data-placement="top" title="{{ 'checkout.phone-number-tooltip'|trans }}">
+                            <svg class="icon"><use xlink:href="#question-circle-fill"></use></svg>
+                        </div>
+                    </div>
+                </div>
+                <label for="{{ recipientForm.phone.vars.full_name }}" class="form-label">{{ 'checkout.recipient.phone'|trans }}</label>
+                {{ form_widget(recipientForm.phone, {'attr': {'class': '', 'placeholder': 'checkout.recipient.phone-placeholder'|trans }}) }}
+                {{ form_errors(recipientForm.phone|raw) }}
+            </div>
+        </div>
+        {# Render CSRF token etc .#}
+        <div style="display:none">
+            {{ form_rest(recipientForm) }}
+        </div>
+
+{{ form_end(recipientForm) }}

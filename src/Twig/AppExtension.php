@@ -16,12 +16,11 @@ use DateTime;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
-use Imagine\Gd\Image;
 use Psr\Container\ContainerInterface;
 use stdClass;
+use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\PropertyInfo\Extractor\PhpDocExtractor;
-use Symfony\Component\Serializer\Encoder\CsvEncoder;
 use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
 use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
@@ -86,6 +85,7 @@ class AppExtension extends AbstractExtension implements ServiceSubscriberInterfa
             'storeLogo' => $this->storeSettings->get('store.logo'),
             'storeLogoInverted' => $this->storeSettings->get('store.logo-inverted'),
             'storeFavicon' => $this->storeSettings->get('store.favicon'),
+            'cssVersion' => $this->getCssVersion(),
 
             'storeBrand' => $this->storeSettings->get('store.brand'),
             'flowerShopMode' => $this->storeSettings->get('general.flower-shop-mode'),
@@ -642,4 +642,28 @@ class AppExtension extends AbstractExtension implements ServiceSubscriberInterfa
         );
     }
 
+    public function getCssVersion()
+    {
+        $path = '../public/style/';
+        $filename = 'version.txt';
+
+        $file = new SplFileInfo($path.$filename, '', '');
+        if (false == $file->isFile()) return null;
+
+        return $file->getContents();
+
+//        $finder = new Finder();
+//        $finder->files()->in($path)->name('version.txt');
+//        $count = $finder->count();
+//
+//        // Only one such file can exist
+//        if ($count != 1) return null;
+//
+//        $files = iterator_to_array($finder);
+//        foreach ($files as $file) {
+//            return $file->getContents();
+//        }
+//
+//        return null;
+    }
 }

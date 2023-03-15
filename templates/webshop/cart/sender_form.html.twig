@@ -1,0 +1,93 @@
+{% import _self as myOwnMacro %}
+
+{% macro firstname(item) %}
+    <div class="form-group input-float col-md-6 {% if item.firstname.vars.value is defined and item.firstname.vars.value %}active{% endif %}">
+        <label for="{{ item.firstname.vars.full_name }}" class="form-label">{{ 'checkout.sender.firstname'|trans }}</label>
+        {{ form_widget(item.firstname, {'attr': {'class': '', 'placeholder': 'checkout.sender.firstname'|trans}}) }}
+        {{ form_errors(item.firstname) }}
+    </div>
+{% endmacro %}
+
+{% macro lastname(item) %}
+    <div class="form-group input-float col-md-6 {% if item.lastname.vars.value is defined and item.lastname.vars.value %}active{% endif %}">
+        <label for="{{ item.lastname.vars.full_name }}" class="form-label">{{ 'checkout.sender.lastname'|trans }}</label>
+        {{ form_widget(item.lastname, {'attr': {'class': '', 'placeholder': 'checkout.sender.lastname'|trans}}) }}
+        {{ form_errors(item.lastname) }}
+    </div>
+{% endmacro %}
+
+{{ form_start(senderForm, { 'attr': {'class': 'JS--Wrapper-senderForm',
+}}) }}
+        <div class="form-row">
+            {% if app.request.locale == 'hu' %}
+                {{ myOwnMacro.lastname(senderForm) }}
+                {{ myOwnMacro.firstname(senderForm) }}
+            {% endif %}
+            {% if app.request.locale == 'en' %}
+                {{ myOwnMacro.firstname(senderForm) }}
+                {{ myOwnMacro.lastname(senderForm) }}
+            {% endif %}
+        </div>
+        <div class="form-row">
+            <div class="form-group input-float col-sm-8 {% if senderForm.company.vars.value is defined and senderForm.company.vars.value %}active{% endif %}">
+                <label for="{{ senderForm.company.vars.full_name }}" class="form-label">{{ 'checkout.sender.company'|trans }}</label>
+                {{ form_widget(senderForm.company, {'attr': {'class': '', 'placeholder': 'checkout.sender.company'|trans }}) }}
+                {{ form_errors(senderForm.company) }}
+            </div>
+            <div class="form-group input-float col-sm-4 {% if senderForm.companyVatNumber.vars.value is defined and senderForm.companyVatNumber.vars.value %}active{% endif %}">
+                <label for="{{ senderForm.companyVatNumber.vars.full_name }}" class="form-label">{{ 'checkout.sender.tax-number'|trans }}</label>
+                {{ form_widget(senderForm.companyVatNumber, {'attr': {'class': '', 'placeholder': 'checkout.sender.tax-number'|trans }}) }}
+                {{ form_errors(senderForm.companyVatNumber) }}
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group input-float col-md-12 {% if senderForm.address.street.vars.value is defined and senderForm.address.street.vars.value %}active{% endif %}">
+                <label for="{{ senderForm.address.street.vars.full_name }}" class="form-label">{{ 'checkout.sender.address'|trans }}</label>
+                {{ form_widget(senderForm.address.street, {'attr': {'class': '', 'placeholder': 'checkout.sender.address-placeholder'|trans }}) }}
+                {{ form_errors(senderForm.address.street) }}
+{#                <span class="invalid-feedback">#}
+{#                    {% for error in senderForm.address.street.vars.errors %}#}
+{#                        {{ error.message }}#}
+{#                    {% endfor %}#}
+{#                </span>#}
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group input-float col-md-12 {% if senderForm.address.city.vars.value is defined and senderForm.address.city.vars.value %}active{% endif %}">
+                <label for="{{ senderForm.address.city.vars.full_name }}" class="form-label">{{ 'checkout.sender.city'|trans }}</label>
+                {{ form_widget(senderForm.address.city, {'attr': {'class': 'JS--senderForm-city', 'placeholder': 'checkout.sender.city-placeholder'|trans }}) }}
+                {{ form_errors(senderForm.address.city) }}
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col-sm-5">
+            <div class="form-group input-float input-float-select mb-sm-0 {% if senderForm.address.country.vars.value is defined and senderForm.address.country.vars.value %}active{% endif %}">
+                <label for="{{ senderForm.address.country.vars.full_name }}" class="form-label">{{ 'checkout.sender.country'|trans }}</label>
+                {{ form_widget(senderForm.address.country, {'attr': {'class': '', 'placeholder': 'checkout.sender.country'|trans }}) }}
+                {{ form_errors(senderForm.address.country) }}
+            </div>
+            </div>
+            <div class="form-group input-float col-sm-4 mb-sm-0 {% if senderForm.address.province.vars.value is defined and senderForm.address.province.vars.value %}active{% endif %}">
+                <label for="{{ senderForm.address.province.vars.full_name }}" class="form-label">{{ 'checkout.sender.province'|trans }}</label>
+                {{ form_widget(senderForm.address.province, {'attr': {'class': 'JS--senderForm-province', 'placeholder': 'checkout.sender.province'|trans }}) }}
+                {{ form_errors(senderForm.address.province) }}
+            </div>
+            <div class="form-group input-float col-sm-3 {% if senderForm.address.zip.vars.value is defined and senderForm.address.zip.vars.value %}active{% endif %}">
+                <label for="{{ senderForm.address.zip.vars.full_name }}" class="form-label">{{ 'checkout.sender.zip'|trans }}</label>
+                {{ form_widget(senderForm.address.zip, {'attr': {'class': 'JS--senderForm-zip', 'placeholder': 'checkout.sender.zip'|trans, 'data-url' : path('cart-getPlaceByZip') }}) }}
+                {{ form_errors(senderForm.address.zip) }}
+            </div>
+            <div class="form-group input-float col-md-12 mb-0 {% if senderForm.phone.vars.value is defined and senderForm.phone.vars.value %}active{% endif %}">
+                <label for="{{ senderForm.phone.vars.full_name }}" class="form-label">{{ 'checkout.sender.phone'|trans }}</label>
+                {{ form_widget(senderForm.phone, {'attr': {'class': '', 'placeholder': 'checkout.sender.phone-placeholder'|trans }}) }}
+                {{ form_errors(senderForm.phone) }}
+            </div>
+        </div>
+
+
+        {# Render CSRF token etc .#}
+        <div style="display:none">
+            {{ form_rest(senderForm) }}
+        </div>
+{{ form_end(senderForm) }}
+{#{% do senderForm.setRendered() %}#}

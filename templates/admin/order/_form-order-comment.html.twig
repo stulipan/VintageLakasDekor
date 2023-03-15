@@ -1,0 +1,24 @@
+
+            {{ form_start(commentForm, { 'attr': {'class': 'JS--Wrapper-commentForm' }}) }}
+                <div class="form-group position-relative">
+                    {{ form_widget(commentForm.message, {'attr': {'class': 'input-area', 'rows': 3, 'placeholder': 'order.history.leave-a-comment-here'|trans }} ) }}
+                    <div class="btn-input-area">
+{#                        <div class="loadingWrapper">#}
+{#                            <button type="submit" class="JS--Button-submitComment btn btn-primary "><i class="far fa-paper-plane"></i></button>#}
+{#                            <div class="JS--loadingOverlay d-flex align-items-stretch"></div>#}
+
+                            <button type="submit" class="JS--Button-submitComment btn btn-primary">
+                                <span class="loading-spinner-invisible"><i class="far fa-paper-plane"></i></span>
+                                <span class="loading-spinner" role="status"></span>
+                            </button>
+{#                        </div>#}
+                    </div>
+                    <span class="text-sm text-muted float-right mt-2">{{ 'order.history.only-you-can-see-comments'|trans }}</span>
+                    {{ form_errors(commentForm.message) }}
+                </div>
+            <div class="form-group">
+                {{ form_widget(commentForm.order, {'attr': {'class': 'd-none'}} ) }}
+                {{ form_widget(commentForm.channel, {'attr': {'class': 'd-none'}} ) }}
+            </div>
+            {{ form_end(commentForm) }}
+            {% do commentForm.setRendered() %}

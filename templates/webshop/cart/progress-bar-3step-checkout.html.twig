@@ -1,0 +1,78 @@
+{% if progressBar is defined and progressBar is not empty %}
+<div class="mt-3">
+    <ul class="progress--bar">
+            {% if progressBar == 'pickExtraGift' %}
+
+                <li class="progress--bar-item active">
+                    <span>{{ 'checkout.cart-progress-bar'|trans }}</span>
+                </li>
+                <li class="progress--bar-item">
+                    <svg class="icon"><use xlink:href="#chevron-right"></use></svg>
+                    <span>{{ 'checkout.recipient-progress-bar'|trans }}</span>
+                </li>
+                <li class="progress--bar-item ">
+                    <svg class="icon"><use xlink:href="#chevron-right"></use></svg>
+                    <span>{{ 'checkout.shipping-progress-bar'|trans }}</span>
+                </li>
+                <li class="progress--bar-item ">
+                    <svg class="icon"><use xlink:href="#chevron-right"></use></svg>
+                    <span>{{ 'checkout.payment-progress-bar'|trans }}</span>
+                </li>
+
+            {% elseif progressBar == 'pickDeliveryAddress' %}
+
+                <li class="progress--bar-item with-tick">
+                    <a href="{{ path('site-checkout-step0-pickExtraGift') }}" class="">{{ 'checkout.cart-progress-bar'|trans }}</a>
+                </li>
+                <li class="progress--bar-item active">
+                    <svg class="icon"><use xlink:href="#chevron-right"></use></svg>
+                    <span>{{ 'checkout.recipient-progress-bar'|trans }}</span>
+                </li>
+                <li class="progress--bar-item ">
+                    <svg class="icon"><use xlink:href="#chevron-right"></use></svg>
+                    <span>{{ 'checkout.shipping-progress-bar'|trans }}</span>
+                </li>
+                <li class="progress--bar-item ">
+                    <svg class="icon"><use xlink:href="#chevron-right"></use></svg>
+                    <span>{{ 'checkout.payment-progress-bar'|trans }}</span>
+                </li>
+
+            {% elseif progressBar == 'pickShipping' %}
+
+                <li class="progress--bar-item with-tick">
+                    <a href="{{ path('site-checkout-step0-pickExtraGift') }}" class="">{{ 'checkout.cart-progress-bar'|trans }}</a>
+                </li>
+                <li class="progress--bar-item with-tick">
+                    <svg class="icon"><use xlink:href="#chevron-right"></use></svg>
+                    <a href="{{ path('site-checkout-step1-pickDeliveryAddress') }}" class="">{{ 'checkout.recipient-progress-bar'|trans }}</a>
+                </li>
+                <li class="progress--bar-item active">
+                    <svg class="icon"><use xlink:href="#chevron-right"></use></svg>
+                    <span>{{ 'checkout.shipping-progress-bar'|trans }}</span>
+                </li>
+                <li class="progress--bar-item">
+                    <svg class="icon"><use xlink:href="#chevron-right"></use></svg>
+                    <span>{{ 'checkout.payment-progress-bar'|trans }}</span>
+                </li>
+
+            {% elseif progressBar == 'pickPayment' %}
+
+                <li class="progress--bar-item with-tick">
+                    <a href="{{ path('site-checkout-step0-pickExtraGift') }}" class="">{{ 'checkout.cart-progress-bar'|trans }}</a>
+                </li>
+                <li class="progress--bar-item with-tick">
+                    <svg class="icon"><use xlink:href="#chevron-right"></use></svg>
+                    <a href="{{ path('site-checkout-step1-pickDeliveryAddress') }}" class="">{{ 'checkout.recipient-progress-bar'|trans }}</a>
+                </li>
+                <li class="progress--bar-item with-tick">
+                    <svg class="icon"><use xlink:href="#chevron-right"></use></svg>
+                    <a href="{{ path('site-checkout-step2-pickShipping') }}" class="">{{ 'checkout.shipping-progress-bar'|trans }}</a>
+                </li>
+                <li class="progress--bar-item active">
+                    <svg class="icon"><use xlink:href="#chevron-right"></use></svg>
+                    <span>{{ 'checkout.payment-progress-bar'|trans }}</span>
+                </li>
+            {% endif %}
+    </ul>
+</div>
+{% endif %}

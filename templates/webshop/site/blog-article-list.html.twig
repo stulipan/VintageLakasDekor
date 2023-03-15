@@ -44,7 +44,7 @@
                 <ul class="list-group">
                     {% for article in items %}
                         <li class="list-group-item border-0 p-0">
-                            <div class="card">
+                            <div class="card border-0">
                                 {% if article.imagePath is defined and article.imagePath is not empty %}
                                     <img class="card-img-top" src="{{ uploaded_asset(article.imagePath)|imagine_filter('unscaled') }}" alt="{{ article.title }}">
                                 {% else %}

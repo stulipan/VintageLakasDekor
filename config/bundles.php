@@ -19,7 +19,7 @@ return [
     BabDev\PagerfantaBundle\BabDevPagerfantaBundle::class => ['all' => true],
     SymfonyCasts\Bundle\ResetPassword\SymfonyCastsResetPasswordBundle::class => ['all' => true],
     Endroid\QrCodeBundle\EndroidQrCodeBundle::class => ['all' => true],
-    App\Stulipan\GatewayCib\GatewayCibBundle::class => ['all' => true],
+//    App\Stulipan\GatewayCib\GatewayCibBundle::class => ['all' => true],
 //    App\Stulipan\TraducibleBundle\TraducibleBundle::class => ['all' => true],
     Stulipan\Traducible\StulipanTraducibleBundle::class => ['all' => true],
 ];
